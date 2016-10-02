@@ -1,1 +1,1 @@
-Hello DexPlugin
+一个简单的demo，实现了Android中动态加载dex中的插件
