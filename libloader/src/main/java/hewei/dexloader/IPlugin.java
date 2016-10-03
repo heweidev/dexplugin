@@ -6,5 +6,6 @@ package hewei.dexloader;
 
 public interface IPlugin {
     void init(IHost host);
+    void onCmd(String cmd, String data);
     void uninit();
 }

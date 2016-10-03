@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         final int id = v.getId();
         if (id == R.id.btnLoad) {
-            PluginLoader.loadDex(getApplicationContext());
+            ;
         }
     }
 }

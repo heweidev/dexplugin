@@ -17,6 +17,11 @@ public class TestPlugin implements IPlugin {
     }
 
     @Override
+    public void onCmd(String cmd, String data) {
+        mHost.log("cmd: " + cmd + ", data: " + data);
+    }
+
+    @Override
     public void uninit() {
         mHost.log("test plugin uninit.");
     }

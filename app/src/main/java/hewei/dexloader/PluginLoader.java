@@ -1,9 +1,9 @@
 package hewei.dexloader;
 
 import android.content.Context;
-import android.os.Environment;
 
 import java.io.File;
+import java.util.HashMap;
 
 import dalvik.system.DexClassLoader;
 
@@ -12,24 +12,29 @@ import dalvik.system.DexClassLoader;
  */
 
 public class PluginLoader {
-    public static void loadDex(Context ctx) {
-        String state = Environment.getExternalStorageState();
-        if (!Environment.MEDIA_MOUNTED.equals(state)) {
-            return;
+    private static HashMap<String, IPlugin> sPlugins = new HashMap<>();
+
+    public static IPlugin loadDex(Context ctx, String clsName, File dexFile) {
+        IPlugin plugin = sPlugins.get(clsName);
+        if (plugin != null) {
+            return plugin;
         }
 
-        final String DEX_FILE_NAME = "librunner_dex.jar";
-        File dexFile = new File(Environment.getExternalStorageDirectory(), DEX_FILE_NAME);
+        if (!dexFile.exists()) {
+            return null;
+        }
 
         DexClassLoader loader = new DexClassLoader(dexFile.getPath(), ctx.getCacheDir().getPath(),
                 null, ctx.getClassLoader());
 
         try {
             HostImpl impl = new HostImpl();
-            Class<?> cls = loader.loadClass("hewei.cmdhandler.TestPlugin");
+            Class<?> cls = loader.loadClass(clsName);
             Object obj = cls.newInstance();
             if (obj instanceof IPlugin) {
-                ((IPlugin)obj).init(impl);
+                plugin = (IPlugin)obj;
+                plugin.init(impl);
+                return plugin;
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -38,5 +43,7 @@ public class PluginLoader {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+
+        return null;
     }
 }
